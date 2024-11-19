@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         {
             addMove = false;
             move = Vector3.zero;
-            var inputFrame = new InputFrame(Time.time - startTime, move, false);
+            var inputFrame = new InputFrame(Time.time - startTime, transform.position, false);
             recordedInputs.Add(inputFrame);
         }
     }
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         startTime = Time.time;
         startPos = transform.position;
         isRecording = true;
-        var inputFrame = new InputFrame(Time.time - startTime, move, false);
+        var inputFrame = new InputFrame(Time.time - startTime, transform.position, false);
         recordedInputs.Add(inputFrame);
     }
 
@@ -92,13 +92,16 @@ public class PlayerController : MonoBehaviour
             
         }
         
-        if (isReplaying)
+        if (isRecording)
         {
+            var inputFrame = new InputFrame(Time.time - startTime, transform.position, false);
+            recordedInputs.Add(inputFrame);
+        }
+
+        if (isReplaying) 
+        { 
             ReplayInputs(Time.time - startTime);
         }
-        
-        
-
 
     }
 
@@ -123,12 +126,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (isRecording && addMove)
-        {
-            var inputFrame = new InputFrame(Time.time - startTime, move, false);
-            recordedInputs.Add(inputFrame);
-        }
-
+        
         
     }
     
@@ -144,8 +142,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    RB.linearVelocity = inputFrame.movement * speed;
-                    Debug.Log(inputFrame.movement);
+                    RB.MovePosition(inputFrame.movement);
                 }
             }
         }
@@ -166,4 +163,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("cube"))
+        {
+            
+        }
+    }
 }
