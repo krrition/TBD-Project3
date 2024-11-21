@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 startPos;
 
-
     private void Start()
     {
         RB = gameObject.GetComponent<Rigidbody>();
