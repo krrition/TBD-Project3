@@ -151,7 +151,7 @@ MonoBehaviour:
   PF_Char: {fileID: 3942610238533063908, guid: ced5f27f54aeb1d41985644938f1f994, type: 3}
   SpawnP1: {fileID: 758384212}
   SpawnP2: {fileID: 74839309}
-  RoundTime: 10
+  RoundTime: 1
 --- !u!4 &35869028
 Transform:
   m_ObjectHideFlags: 0

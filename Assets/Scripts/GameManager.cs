@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
    
    private float RoundTimer;
 
-   private GameObject[] P1Cs = new GameObject[10];
-   private GameObject[] P2Cs = new GameObject[10];
+   private GameObject[] P1Cs = new GameObject[6];
+   private GameObject[] P2Cs = new GameObject[6];
 
    private Vector3 P1Spawn, P2Spawn;
    
@@ -62,9 +62,10 @@ public class GameManager : MonoBehaviour
                P2Cs[RoundNum].GameObject().GetComponent<PlayerController>().StopRecording();
                P2Spawn = new Vector3(P2Spawn.x, P2Spawn.y, P2Spawn.z - 1);
                TurnP2 = false;
+               RoundNum++;
            }
 
-           RoundNum++;
+           
            HandleCharacters();
            RoundTimer = RoundTime;
        }
@@ -75,7 +76,7 @@ public class GameManager : MonoBehaviour
    {
        if (!TurnP2)
        {
-           for (var i = RoundNum-1; i > 0 ; i--)
+           for (var i = RoundNum; i > 0 ; i--)
            {
                
                if (P1Cs[i] != null)
@@ -83,6 +84,12 @@ public class GameManager : MonoBehaviour
                
                if (P2Cs[i] != null)
                    P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+
+               if (i >= RoundNum)
+               {
+                   P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+                   P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               }
 
            }
 
@@ -91,13 +98,19 @@ public class GameManager : MonoBehaviour
        }
        else
        {
-           for (var i = RoundNum-1; i > 0; i--)
+           for (var i = RoundNum; i > 0; i--)
            {
                if (P1Cs[i] != null)
                    P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
                
                if (P2Cs[i] != null)
                    P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               
+               if (i >= RoundNum)
+               {
+                   P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+                   P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               }
 
            }
 
