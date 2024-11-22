@@ -85,12 +85,6 @@ public class GameManager : MonoBehaviour
                if (P2Cs[i] != null)
                    P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
 
-               if (i >= RoundNum)
-               {
-                   P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
-                   P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
-               }
-
            }
 
            P1Cs[RoundNum] = Instantiate(PF_Char, P1Spawn, Quaternion.identity);
@@ -105,12 +99,6 @@ public class GameManager : MonoBehaviour
                
                if (P2Cs[i] != null)
                    P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
-               
-               if (i >= RoundNum)
-               {
-                   P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
-                   P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
-               }
 
            }
 
