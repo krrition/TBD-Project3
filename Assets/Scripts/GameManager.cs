@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
    private float RoundTime = 10;
    
    private bool TurnP2;
+   
+   private bool ReplayOnly;
 
    private int RoundNum;
    
@@ -22,6 +25,9 @@ public class GameManager : MonoBehaviour
    private GameObject[] P2Cs = new GameObject[6];
 
    private Vector3 P1Spawn, P2Spawn;
+
+   public List<GameObject> Abilities1;
+   public List<GameObject> Abilities2;
    
    /* Round begins, spawn in player 1 character 1, start recording
     * Timer ends, stop the recording of p1c1
@@ -32,10 +38,13 @@ public class GameManager : MonoBehaviour
 
    private void Start()
    {
+       Abilities2 = new List<GameObject>(Abilities1);
        RoundNum = 1;
        P1Spawn = SpawnP1.transform.position;
        P2Spawn = SpawnP2.transform.position;
-       P1Cs[RoundNum] = Instantiate(PF_Char, P1Spawn, Quaternion.identity); 
+       P1Cs[RoundNum] = Instantiate(PF_Char, P1Spawn, Quaternion.identity);
+       P1Cs[RoundNum].tag = "P1";
+       P1Cs[RoundNum].name = "P1C"+RoundNum;
        RoundTimer = RoundTime;
    }
 
@@ -51,19 +60,27 @@ public class GameManager : MonoBehaviour
 
        if (RoundTimer<=0)
        {
-           if (!TurnP2)
+           if (!TurnP2 && RoundNum >= P1Cs.Length && !ReplayOnly || TurnP2 && RoundNum >= P2Cs.Length && !ReplayOnly)
+           {
+               ReplayOnly = true;
+               Debug.Log(ReplayOnly);
+           }
+           
+           else if (!TurnP2 && RoundNum < P1Cs.Length)
            {
                P1Cs[RoundNum].GameObject().GetComponent<PlayerController>().StopRecording();
                P1Spawn = new Vector3(P1Spawn.x, P1Spawn.y, P1Spawn.z - 1);
                TurnP2 = true;
            }
-           else
+           else if (TurnP2 && RoundNum < P2Cs.Length)
            {
                P2Cs[RoundNum].GameObject().GetComponent<PlayerController>().StopRecording();
                P2Spawn = new Vector3(P2Spawn.x, P2Spawn.y, P2Spawn.z - 1);
                TurnP2 = false;
-               RoundNum++;
+               RoundNum = !ReplayOnly ? RoundNum + 1: RoundNum;
            }
+           
+           
 
            
            HandleCharacters();
@@ -74,9 +91,9 @@ public class GameManager : MonoBehaviour
    
    private void HandleCharacters()
    {
-       if (!TurnP2)
+       if (ReplayOnly)
        {
-           for (var i = RoundNum; i > 0 ; i--)
+           for (var i = RoundNum-1; i > 0 ; i--)
            {
                
                if (P1Cs[i] != null)
@@ -86,24 +103,53 @@ public class GameManager : MonoBehaviour
                    P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
 
            }
-
-           P1Cs[RoundNum] = Instantiate(PF_Char, P1Spawn, Quaternion.identity);
-
        }
-       else
+
+       else 
        {
-           for (var i = RoundNum; i > 0; i--)
+           if (!TurnP2)
            {
-               if (P1Cs[i] != null)
-                   P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               for (var i = RoundNum; i > 0 ; i--)
+               {
                
-               if (P2Cs[i] != null)
-                   P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+                   if (P1Cs[i] != null)
+                       P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               
+                   if (P2Cs[i] != null)
+                       P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+
+               }
+
+               P1Cs[RoundNum] = Instantiate(PF_Char, P1Spawn, Quaternion.identity);
+               P1Cs[RoundNum].tag = "P1";
+               P1Cs[RoundNum].name = "P1C"+RoundNum;
 
            }
+           else
+           {
+               for (var i = RoundNum; i > 0; i--)
+               {
+                   if (P1Cs[i] != null)
+                       P1Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
+               
+                   if (P2Cs[i] != null)
+                       P2Cs[i].GameObject().GetComponent<PlayerController>().StartReplay();
 
-           P2Cs[RoundNum] = Instantiate(PF_Char, P2Spawn, Quaternion.identity);
+               }
+
+               P2Cs[RoundNum] = Instantiate(PF_Char, P2Spawn, Quaternion.identity);
+               P2Cs[RoundNum].tag = "P2";
+               P2Cs[RoundNum].name = "P2C"+RoundNum;
+
+               
            
+           }
        }
    }
+
+   private void CreateCharacters()
+   {
+       
+   }
+
 }

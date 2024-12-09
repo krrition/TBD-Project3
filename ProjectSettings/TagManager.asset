@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - cube
+  - P1
+  - P2
+  - Trap1
+  - Trap2
   layers:
   - Default
   - TransparentFX

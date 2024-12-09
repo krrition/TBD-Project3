@@ -24,8 +24,19 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 startPos;
 
+    public bool isGhost;
+
+    [SerializeField]
+    private Material ghostMat;
+
+    private Material normMat;
+
+    public GameObject Ability;
+    public GameObject Item;
+
     private void Start()
     {
+        normMat = gameObject.GetComponent<MeshRenderer>().material;
         RB = gameObject.GetComponent<Rigidbody>();
         StartRecording();
     }
@@ -54,7 +65,20 @@ public class PlayerController : MonoBehaviour
             recordedInputs.Add(inputFrame);
         }
     }
-    
+
+    public void OnFire(InputAction.CallbackContext cc)
+    {
+        if (!isRecording) return;
+
+        if (cc.canceled)
+        {
+            var inputFrame = new InputFrame(Time.time - startTime, transform.position, true);
+            recordedInputs.Add(inputFrame);
+            Item = Instantiate(Ability, transform.position, Quaternion.identity);
+            Item.GetComponent<ItemController>().isGhost = isGhost;
+        }
+    }
+
     public void StartRecording()
     {
         recordedInputs.Clear();
@@ -74,6 +98,7 @@ public class PlayerController : MonoBehaviour
     {
         startTime = Time.time;
         transform.position = startPos;
+        ResetGhost();
         isReplaying = true;
     }
 
@@ -107,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        /*if (Input.GetKeyDown(KeyCode.R))
         {
             if (isRecording)
             {
@@ -123,10 +148,10 @@ public class PlayerController : MonoBehaviour
             {
                 StopReplay();
             }
-        }
-        
-        
-        
+        }*/
+
+
+
     }
     
     private void ReplayInputs(float currentTime)
@@ -137,7 +162,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (inputFrame.fire)
                 {
-                    Debug.Log("Fire");
+                    RB.MovePosition(inputFrame.movement);
+                    Item = Instantiate(Ability, transform.position, Quaternion.identity);
+                    Item.GetComponent<ItemController>().isGhost = isGhost;
+                    RB.MovePosition(inputFrame.movement);
                 }
                 else
                 {
@@ -165,9 +193,22 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("cube"))
+        if (other.CompareTag("Trap") && !isGhost)
         {
-            
+            TurnGhost();
         }
+    }
+
+    public void TurnGhost()
+    {
+        isGhost = true;
+        gameObject.GetComponent<MeshRenderer>().material = ghostMat;
+
+    }
+
+    public void ResetGhost()
+    {
+        isGhost = false;
+        gameObject.GetComponent<MeshRenderer>().material = normMat;
     }
 }
