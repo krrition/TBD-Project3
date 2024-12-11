@@ -9,10 +9,25 @@ public class ItemController : MonoBehaviour
     [SerializeField]
     private Material ghostMat;
 
+    [SerializeField]
+    private Material normMat;
+
     private void Update()
     {
-        if (!isGhost || doOnce) return;
-        gameObject.GetComponent<MeshRenderer>().material = ghostMat;
-        doOnce = true;
+        if (isGhost && !doOnce)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = ghostMat;
+            doOnce = true;
+        }
+
+        else if (!isGhost && doOnce)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = normMat;
+            doOnce = false;
+        }
+
+        
     }
 }
+    
+

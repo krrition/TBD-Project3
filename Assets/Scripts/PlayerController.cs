@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,7 +33,10 @@ public class PlayerController : MonoBehaviour
     private Material normMat;
 
     public GameObject Ability;
+    
     public GameObject Item;
+
+    public bool ItemOnce = true;
 
     private void Start()
     {
@@ -72,10 +76,10 @@ public class PlayerController : MonoBehaviour
 
         if (cc.canceled)
         {
+            Debug.Log("Up");
             var inputFrame = new InputFrame(Time.time - startTime, transform.position, true);
             recordedInputs.Add(inputFrame);
-            Item = Instantiate(Ability, transform.position, Quaternion.identity);
-            Item.GetComponent<ItemController>().isGhost = isGhost;
+            SpawnItem();
         }
     }
 
@@ -96,10 +100,12 @@ public class PlayerController : MonoBehaviour
 
     public void StartReplay()
     {
+        gameObject.GetComponent<BoxCollider>().isTrigger = true;
         startTime = Time.time;
         transform.position = startPos;
         ResetGhost();
         isReplaying = true;
+        if (Item != null) Item.SetActive(false);
     }
 
     public void StopReplay()
@@ -129,45 +135,20 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
-    private void Update()
-    {
-        /*if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (isRecording)
-            {
-                StopRecording();
-            }
-            
-            else if (!isRecording)
-            {
-                StartReplay();
-            }
-            
-            else if (isReplaying)
-            {
-                StopReplay();
-            }
-        }*/
-
-
-
-    }
-    
     private void ReplayInputs(float currentTime)
     {
         foreach (var inputFrame in recordedInputs)
         {
             if (Mathf.Abs(inputFrame.timestamp - currentTime) < 0.02f)
             {
-                if (inputFrame.fire)
+                if (inputFrame.fire && Item != null)
                 {
                     RB.MovePosition(inputFrame.movement);
-                    Item = Instantiate(Ability, transform.position, Quaternion.identity);
                     Item.GetComponent<ItemController>().isGhost = isGhost;
+                    Item.SetActive(true);
                     RB.MovePosition(inputFrame.movement);
                 }
-                else
+                else if (!inputFrame.fire)
                 {
                     RB.MovePosition(inputFrame.movement);
                 }
@@ -193,8 +174,16 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Trap") && !isGhost)
+        if (gameObject.CompareTag("P1") && other.CompareTag("Trap2") && !other.GameObject().GetComponent<ItemController>().isGhost && !isGhost)
         {
+            other.GameObject().SetActive(false);
+            TurnGhost();
+
+        }
+        
+        else if (gameObject.CompareTag("P2") && other.CompareTag("Trap1") && !other.GameObject().GetComponent<ItemController>().isGhost  && !isGhost)
+        {
+            other.GameObject().SetActive(false);
             TurnGhost();
         }
     }
@@ -210,5 +199,14 @@ public class PlayerController : MonoBehaviour
     {
         isGhost = false;
         gameObject.GetComponent<MeshRenderer>().material = normMat;
+    }
+
+    private void SpawnItem()
+    {
+        if (!ItemOnce) return;
+        Item = Instantiate(Ability, transform.position, Quaternion.identity);
+        Item.tag = gameObject.CompareTag("P1") ? "Trap1" : "Trap2";
+        Item.GetComponent<ItemController>().isGhost = isGhost;
+        ItemOnce = false;
     }
 }
