@@ -155,6 +155,7 @@ MonoBehaviour:
   Abilities1: []
   Abilities2: []
   trap: {fileID: 7197914537430741551, guid: 57ecae2ecd0d77d4aaedbb197cd46765, type: 3}
+  ob_nest: {fileID: 1322431232}
 --- !u!4 &35869028
 Transform:
   m_ObjectHideFlags: 0
@@ -681,6 +682,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stealTime: 3
+  Stealer: {fileID: 0}
+  nextStealers: []
+  neutral: {fileID: 2100000, guid: 2fe9b1de554c6bc40b5e18ee42e34578, type: 2}
+  p1: {fileID: 2100000, guid: 3ed3ead90ce40de4ebc9dc69c3e1789d, type: 2}
+  p2: {fileID: 2100000, guid: 322e0149a131b58489f22a677d024c6e, type: 2}
 --- !u!65 &1322431234
 BoxCollider:
   m_ObjectHideFlags: 0

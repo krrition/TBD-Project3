@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
    public List<GameObject> Abilities2;
 
    public GameObject trap;
+
+   public GameObject ob_nest;
    
    /* Round begins, spawn in player 1 character 1, start recording
     * Timer ends, stop the recording of p1c1
@@ -83,6 +85,7 @@ public class GameManager : MonoBehaviour
            
            
            HandleCharacters();
+           ob_nest.GetComponent<NestController>().RoundReset();
            RoundTimer = RoundTime;
            
        }

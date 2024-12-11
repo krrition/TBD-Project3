@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using NUnit.Framework.Constraints;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,17 +14,17 @@ public class NestController : MonoBehaviour
     private float stealTimer;
 
     private bool activate;
-    
-    private bool doOnce;
 
-    private GameObject Stealer;
+    public GameObject Stealer;
 
-    private List<GameObject> nextStealers = new List<GameObject>();
+    public List<GameObject> nextStealers = new List<GameObject>();
 
     [NonSerialized]
     public bool p1W, p2W;
 
-    private void Start()
+    [SerializeField] private Material neutral, p1, p2;
+
+        private void Start()
     {
         stealTimer = stealTime;
     }
@@ -36,10 +37,18 @@ public class NestController : MonoBehaviour
             Stealing();
         }
 
-        else if (Stealer != null && Stealer.GetComponent<PlayerController>().isGhost)
+        else if (Stealer != null && Stealer.GetComponent<PlayerController>().isGhost && nextStealers != null)
         {
             Stealer = null;
-            Stealer = nextStealers.First();
+            ResetSteal();
+            Stealer = nextStealers[0];
+        }
+        
+        else if (Stealer != null && Stealer.GetComponent<PlayerController>().isGhost && nextStealers == null)
+        {
+            Stealer = null;
+            ResetSteal();
+            activate = false;
         }
         
     }
@@ -56,46 +65,114 @@ public class NestController : MonoBehaviour
             {
                 p1W = true;
                 p2W = false;
+                ChangeOwner();
+                Stealer = null;
+                RemoveStealers();
+                stealTimer = stealTime;
+                Stealer = nextStealers.First();
             }
 
             else if (Stealer.CompareTag("P2"))
             {
                 p2W = true;
                 p1W = false;
+                ChangeOwner();
+                Stealer = null;
+                RemoveStealers();
+                stealTimer = stealTime;
+                Stealer = nextStealers.First();
             }
+
+            
+
         }
     }
 
     private void ResetSteal()
     {
-        Debug.Log("Reset steal");
+        stealTimer = stealTime;
+    }
+
+    private void RemoveStealers()
+    {
+        foreach (var Stlr in nextStealers)
+        {
+            if (p1W && Stlr.CompareTag("P1"))
+            {
+                nextStealers.Remove(Stlr);
+            }
+
+            else if (p2W && Stlr.CompareTag("P2"))
+            {
+                nextStealers.Remove(Stlr);
+            }
+        }
+    }
+
+    private void ChangeOwner()
+    {
+        if (p1W)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = p1;
+        }
+
+        else if (p2W)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = p2;
+        }
+        
+        else if (!p1W && !p2W)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = neutral;
+        }
+    }
+
+    public void RoundReset()
+    {
+        p1W = false;
+        p2W = false;
+        
+        ChangeOwner();
+
+        stealTimer = stealTime;
+
+        activate = false;
+
+        Stealer = null;
+
+        nextStealers = new List<GameObject>();
+
+        
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.GameObject().CompareTag("P1") && !other.GameObject().CompareTag("P2")) return;
+        if (!other.CompareTag("P1") && !other.CompareTag("P2")) return;
         if (other.GameObject().GetComponent<PlayerController>().isGhost) return;
-
-        if (Stealer == null)
-        {
-            activate = true;
-            Stealer = other.GameObject();
-
-        }
-
-        else if (Stealer != null)
-        {
-            nextStealers.Add(other.GameObject());
-        }
-
+        if (p1W && other.CompareTag("P1") || p2W && other.CompareTag("P2")) return;
         
+            if (Stealer == null)
+            {
+                activate = true;
+                Stealer = other.GameObject();
+
+            }
+
+            else if (Stealer != null)
+            {
+                nextStealers.Add(other.GameObject());
+            }
+        
+
+
+
 
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.GameObject().CompareTag("P1") && !other.GameObject().CompareTag("P2")) return;
+        if (!other.CompareTag("P1") && !other.CompareTag("P2")) return;
         if (other.GameObject().GetComponent<PlayerController>().isGhost) return;
 
 
@@ -103,13 +180,14 @@ public class NestController : MonoBehaviour
         {
             Stealer = null;
             ResetSteal();
-            Stealer = nextStealers[0];
-            nextStealers.Remove(nextStealers[0]);
+            Stealer = nextStealers.First();
+            nextStealers.Remove(nextStealers.First());
         }
         
         else if (other.GameObject() == Stealer && nextStealers == null)
         {
             Stealer = null;
+            ResetSteal();
             activate = false;
 
         }
