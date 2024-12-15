@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
    private GameObject[] P1Cs = new GameObject[6];
    private GameObject[] P2Cs = new GameObject[6];
 
+   private Sprite p1sp;
+   private Sprite p2sp;
+
    private Vector3 P1Spawn, P2Spawn;
 
    public List<GameObject> Abilities1;
@@ -32,13 +35,6 @@ public class GameManager : MonoBehaviour
    public GameObject trap;
 
    public GameObject ob_nest;
-   
-   /* Round begins, spawn in player 1 character 1, start recording
-    * Timer ends, stop the recording of p1c1
-    * Round begins, reset timer, spawn in p2c1, replay p1c1
-    * Timer ends, stop recording of p2c1, stop replay p1c1
-    * 
-    */
 
    private void Start()
    {
@@ -55,8 +51,7 @@ public class GameManager : MonoBehaviour
        RoundTimerReset();
        
    }
-
-   // ReSharper disable Unity.PerformanceAnalysis
+   
    private void RoundTimerReset()
    {
        RoundTimer -= Time.deltaTime;

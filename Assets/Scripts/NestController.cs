@@ -22,10 +22,13 @@ public class NestController : MonoBehaviour
     [NonSerialized]
     public bool p1W, p2W;
 
-    [SerializeField] private Material neutral, p1, p2;
+    [SerializeField] private Sprite neutral, p1, p2;
 
-        private void Start()
+    private SpriteRenderer SP;
+
+    private void Start()
     {
+        SP = GetComponent<SpriteRenderer>();
         stealTimer = stealTime;
     }
 
@@ -67,9 +70,9 @@ public class NestController : MonoBehaviour
                 p2W = false;
                 ChangeOwner();
                 Stealer = null;
-                RemoveStealers();
+                if (nextStealers!= null)RemoveStealers();
                 stealTimer = stealTime;
-                Stealer = nextStealers.First();
+                if (nextStealers!= null)Stealer = nextStealers.First();
             }
 
             else if (Stealer.CompareTag("P2"))
@@ -78,9 +81,9 @@ public class NestController : MonoBehaviour
                 p1W = false;
                 ChangeOwner();
                 Stealer = null;
-                RemoveStealers();
+                if (nextStealers!= null)RemoveStealers();
                 stealTimer = stealTime;
-                Stealer = nextStealers.First();
+                if (nextStealers!= null)Stealer = nextStealers.First();
             }
 
             
@@ -113,17 +116,19 @@ public class NestController : MonoBehaviour
     {
         if (p1W)
         {
-            gameObject.GetComponent<MeshRenderer>().material = p1;
+            SP.sprite = p1;
         }
 
         else if (p2W)
         {
-            gameObject.GetComponent<MeshRenderer>().material = p2;
+            SP.sprite = p2;
+
         }
         
         else if (!p1W && !p2W)
         {
-            gameObject.GetComponent<MeshRenderer>().material = neutral;
+            SP.sprite = neutral;
+
         }
     }
 

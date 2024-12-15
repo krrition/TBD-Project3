@@ -28,6 +28,23 @@ public class ItemController : MonoBehaviour
 
         
     }
+
+
+    /*private void OnTriggerEnter(Collider other)
+    {
+        
+        if (gameObject.CompareTag("Trap1") && other.CompareTag("P2") && !isGhost/* && !other.GetComponent<PlayerController>().isGhost#1#
+            || gameObject.CompareTag("Trap2") && other.CompareTag("P1") && !isGhost/* && !other.GetComponent<PlayerController>().isGhost#1#)
+        {
+            Invoke("Deactive",0.4f);
+        }
+    }
+
+    void Deactive()
+    {
+        gameObject.SetActive(false);
+    }*/
+
 }
     
 
