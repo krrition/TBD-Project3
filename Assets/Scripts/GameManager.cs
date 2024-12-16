@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
    public GameObject trap;
 
    public GameObject ob_nest;
+   
+   public GameObject ob_crown;
 
    private void Start()
    {
@@ -80,7 +82,8 @@ public class GameManager : MonoBehaviour
            
            
            HandleCharacters();
-           ob_nest.GetComponent<NestController>().RoundReset();
+           if (ob_nest != null) ob_nest.GetComponent<NestController>().RoundReset();
+           if (ob_crown != null) ob_crown.GetComponent<CrownController>().RoundReset();
            RoundTimer = RoundTime;
            
        }
