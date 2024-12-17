@@ -15,7 +15,13 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 move;
 
-    public float speed = 5;
+    public float walkSpeed = 5;
+    
+    public float sprintSpeed = 10f;
+
+    private float speed = 5;
+    
+    private bool sprinting;
 
     private List<InputFrame> recordedInputs = new List<InputFrame>();
 
@@ -45,7 +51,9 @@ public class PlayerController : MonoBehaviour
 
     public bool ItemOnce = true;
 
-    private bool SpFlip;
+    [NonSerialized] public bool SpFlip;
+
+    public bool armorHit;
 
     private void Start()
     {
@@ -114,7 +122,9 @@ public class PlayerController : MonoBehaviour
         {
             var inputFrame = new InputFrame(Time.time - startTime, transform.position, true, SpFlip);
             recordedInputs.Add(inputFrame);
-            SpawnItem();
+            if (!Ability.CompareTag("Sprint"))SpawnItem();
+            else if (Ability.CompareTag("Sprint") && !sprinting)ActivateSprint();
+            else if (Ability.CompareTag("Sprint") && sprinting)DeactivateSprint();
         }
     }
 
@@ -145,9 +155,10 @@ public class PlayerController : MonoBehaviour
         transform.position = startPos;
         ResetGhost();
         isReplaying = true;
-        if (Item != null)
+        if (Item != null && !Ability.CompareTag("Sprint"))
         {
             if (Item.CompareTag("Turret")) Item.GetComponent<TurretController>().Activate();
+            else if (Item.CompareTag("Armor")) Item.GetComponent<ArmorController>().RoundReset();
             Item.SetActive(false);
         }
     }
@@ -188,18 +199,20 @@ public class PlayerController : MonoBehaviour
                 if (inputFrame.fire && Item != null)
                 {
                     RB.MovePosition(inputFrame.movement);
-                    Item.SetActive(true);
+                    if (!Ability.CompareTag("Sprint"))Item.SetActive(true);
                     IC.isGhost = isGhost;
                     RB.MovePosition(inputFrame.movement);
                 }
                 else if (!inputFrame.fire && inputFrame.flip)
                 {
                     RB.MovePosition(inputFrame.movement);
+                    SpFlip = true;
                     SP.flipX = true;
                 }
                 else if (!inputFrame.fire && !inputFrame.flip)
                 {
                     RB.MovePosition(inputFrame.movement);
+                    SpFlip = false;
                     SP.flipX = false;
                 }
             }
@@ -228,19 +241,19 @@ public class PlayerController : MonoBehaviour
     {
         if (isGhost) return;
         
-        if (other.CompareTag("Bullet") && !other.GameObject().GetComponent<BulletController>().isGhost)
+        if (other.CompareTag("Bullet") && !other.GetComponent<BulletController>().isGhost)
         {
             Destroy(other.GameObject());
             TurnGhost();
         }
-        
-        if (gameObject.CompareTag("P1") && other.CompareTag("Trap2") && !other.GameObject().GetComponent<ItemController>().isGhost)
+
+        if (gameObject.CompareTag("P1") && other.CompareTag("Trap2") && !other.GetComponent<ItemController>().isGhost)
         {
             StartCoroutine(TrapGhost(other.GameObject()));
 
         }
         
-        else if (gameObject.CompareTag("P2") && other.CompareTag("Trap1") && !other.GameObject().GetComponent<ItemController>().isGhost)
+        else if (gameObject.CompareTag("P2") && other.CompareTag("Trap1") && !other.GetComponent<ItemController>().isGhost)
         {
             StartCoroutine(TrapGhost(other.GameObject()));
         }
@@ -248,6 +261,11 @@ public class PlayerController : MonoBehaviour
 
     public void TurnGhost()
     {
+        if (armorHit)
+        {
+            StartCoroutine(BreakShield());
+            return;
+        }
         isGhost = true;
         SP.color = gameObject.CompareTag("P1") ? Color.clear/5 + Color.cyan / 2 : Color.clear/5 + Color.green / 2;
 
@@ -283,6 +301,15 @@ public class PlayerController : MonoBehaviour
             IC.isGhost = isGhost;
             IC.isP1 = gameObject.CompareTag("P1");
         }
+        
+        else if (Ability.CompareTag("Armor"))
+        {
+            Item = Instantiate(Ability, spn, Quaternion.identity);
+            IC = Item.GetComponent<ItemController>();
+            Item.GetComponentInChildren<TextMeshPro>().text = gameObject.name[3].ToString();
+            IC.isGhost = isGhost;
+            IC.isP1 = gameObject.CompareTag("P1");
+        }
 
         ItemOnce = false;
     }
@@ -292,6 +319,27 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         TurnGhost();
         G.SetActive(false);
+    }
+    
+    IEnumerator BreakShield()
+    {
+        yield return new WaitForSeconds(0.5f);
+        armorHit = false;
+        var ac = GetComponentInChildren<ArmorController>();
+        ac.RoundReset();
+        ac.GameObject().SetActive(false);
+    }
+
+    private void ActivateSprint()
+    {
+        sprinting = true;
+        speed = sprintSpeed;
+    }
+    
+    private void DeactivateSprint()
+    {
+        sprinting = false;
+        speed = walkSpeed;
     }
 
 }

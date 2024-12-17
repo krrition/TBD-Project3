@@ -151,10 +151,10 @@ MonoBehaviour:
   PF_Char: {fileID: 3942610238533063908, guid: ced5f27f54aeb1d41985644938f1f994, type: 3}
   SpawnP1: {fileID: 758384212}
   SpawnP2: {fileID: 74839309}
-  RoundTime: 5
+  RoundTime: 15
   Abilities1: []
   Abilities2: []
-  trap: {fileID: 1621114237652767688, guid: a41a8c4faab8c434d96209820bd1dce8, type: 3}
+  trap: {fileID: 1066276910957704584, guid: de2aea2eb35ca7349acd6223873acd52, type: 3}
   ob_nest: {fileID: 0}
   ob_crown: {fileID: 0}
 --- !u!4 &35869028

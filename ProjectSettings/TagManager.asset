@@ -11,6 +11,8 @@ TagManager:
   - Bullet
   - Wall
   - Turret
+  - Sprint
+  - Armor
   layers:
   - Default
   - TransparentFX

@@ -21,30 +21,32 @@ public class CrownController : MonoBehaviour
 
     private void OwnerGhosted()
     {
-        if (owner != null && owner.GetComponent<PlayerController>().isGhost)
-        {
-            gameObject.transform.parent = null;
-            crownedPos = owner.transform.position;
-            crownedPos.y = 0.5f;
-            transform.position = crownedPos;
-            p1W = false;
-            p2W = false;
-            owner = null;
-        }
+        if (owner == null || !owner.GetComponent<PlayerController>().isGhost) return;
+        gameObject.transform.parent = null;
+        crownedPos = owner.transform.position;
+        crownedPos.y = 0.5f;
+        transform.position = crownedPos;
+        p1W = false;
+        p2W = false;
+        owner = null;
     }
 
     public void RoundReset()
     {
+        if (owner == null) return;
         gameObject.transform.parent = null;
         p1W = false;
         p2W = false;
-        owner = null;
         transform.position = startPos;
+        owner = null;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("P1") && !other.GetComponent<PlayerController>().isGhost)
+        if (owner != null) return;
+        if (!other.CompareTag("P1") && !other.CompareTag("P2")) return;
+        if (other.GetComponent<PlayerController>().isGhost) return;
+        if (other.CompareTag("P1"))
         {
             gameObject.transform.parent = other.GameObject().transform;
             crownedPos = other.GameObject().transform.position;
@@ -59,7 +61,7 @@ public class CrownController : MonoBehaviour
 
         }
         
-        else if (other.CompareTag("P2") && !other.GetComponent<PlayerController>().isGhost)
+        else if (other.CompareTag("P2"))
         {
             gameObject.transform.parent = other.GameObject().transform;
             crownedPos = other.GameObject().transform.position;
