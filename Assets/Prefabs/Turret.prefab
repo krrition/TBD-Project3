@@ -127,7 +127,7 @@ MonoBehaviour:
   Bullet: {fileID: 1068885670444955933, guid: 5c87c2fcf2d119242b1e8fb5739dee3e, type: 3}
   ShootTime: 2
   ReloadTime: 2
-  BulletSpeed: 10
+  BulletSpeed: 20
   BulletLifeTime: 2
   TimeBetweenBullets: 0.3
   deactivated: 0

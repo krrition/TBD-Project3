@@ -13,6 +13,8 @@ TagManager:
   - Turret
   - Sprint
   - Armor
+  - Tnt1
+  - Tnt2
   layers:
   - Default
   - TransparentFX

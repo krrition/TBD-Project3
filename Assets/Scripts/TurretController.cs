@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ public class TurretController : MonoBehaviour
 
     private bool notReloading,shooting;
 
-    public bool deactivated;
-
     private Vector3 dir = Vector3.right;
+
+    private List<GameObject> bullets = new List<GameObject>();
 
     private void Start()
     {
@@ -27,7 +28,6 @@ public class TurretController : MonoBehaviour
 
     private void Update()
     {
-        if (deactivated) return;
         if (notReloading)
         {
             Shooting();
@@ -61,14 +61,16 @@ public class TurretController : MonoBehaviour
         shooting = true;
         yield return new WaitForSeconds(TimeBetweenBullets);
         var bul = Instantiate(Bullet,transform.position,quaternion.identity);
+        bullets.Add(bul);
         bul.GetComponent<Rigidbody>().AddForce(dir*BulletSpeed);
-        
         var bc = bul.GetComponent<BulletController>();
         var ic = GetComponent<ItemController>();
             bc.isGhost = ic.isGhost;
         bc.isP1 = ic.isP1;
         shooting = false;
-        Destroy(bul,BulletLifeTime);
+        yield return new WaitForSeconds(BulletLifeTime);
+        bullets.Remove(bul);
+        Destroy(bul);
         
     }
 
@@ -87,7 +89,6 @@ public class TurretController : MonoBehaviour
 
     private void RoundReset()
     {
-        deactivated = true;
         ShootTimer = ShootTime;
         ReloadTimer = ReloadTime;
         notReloading = true;
@@ -96,7 +97,6 @@ public class TurretController : MonoBehaviour
 
     public void Deactivate()
     {
-        deactivated = true;
         ShootTimer = ShootTime;
         ReloadTimer = ReloadTime;
         notReloading = true;
@@ -104,10 +104,16 @@ public class TurretController : MonoBehaviour
     
     public void Activate()
     {
-        deactivated = false;
         ShootTimer = ShootTime;
-        ReloadTimer = ReloadTime;
         notReloading = true;
+        ReloadTimer = ReloadTime;
+        if (bullets == null) return;
+        foreach (var GOB in bullets)
+        {
+            Destroy(GOB);
+        }
+        bullets.Clear();
+
     }
 
     public void DirectionRight(bool r)

@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
     [NonSerialized] public bool SpFlip;
 
-    public bool armorHit;
+    public bool armorHit,miteOwn;
 
     private void Start()
     {
