@@ -36,12 +36,12 @@ public class PlayerController : MonoBehaviour
     public Sprite sp2;
 
     private Color cnorm = new Color(255, 255, 255, 255);
-    
-    private Color cghost = new Color(255, 255, 255, 50);
 
     public GameObject Ability;
     
-    public GameObject Item,debugDe;
+    public GameObject Item;
+    
+    public ItemController IC;
 
     public bool ItemOnce = true;
 
@@ -52,37 +52,22 @@ public class PlayerController : MonoBehaviour
         SP = GetComponent<SpriteRenderer>();
         RB = GetComponent<Rigidbody>();
         StartRecording();
-        //transform.rotation = Quaternion.Euler(90f,0,0);
 
         if (gameObject.CompareTag("P1"))
         {
             SP.sprite = sp1;
             SP.color = cnorm;
+            SpFlip = false;
         }
 
         else if (gameObject.CompareTag("P2"))
         {
             SP.sprite = sp2;
             SP.color = cnorm;
+            SpFlip = true;
             SP.flipX = true;
 
         }
-    }
-
-    private void Update()
-    {
-        /*if (debugDe != null)
-        {
-            debugDe.SetActive(false);
-        }
-
-        else if (debugDe != null && debugDe.activeSelf == false)
-        {
-            debugDe = null;
-        }
-        */
-        
-        
     }
 
     public void OnMove(InputAction.CallbackContext cc)
@@ -160,7 +145,11 @@ public class PlayerController : MonoBehaviour
         transform.position = startPos;
         ResetGhost();
         isReplaying = true;
-        if (Item != null) Item.SetActive(false);
+        if (Item != null)
+        {
+            if (Item.CompareTag("Turret")) Item.GetComponent<TurretController>().Activate();
+            Item.SetActive(false);
+        }
     }
 
     public void StopReplay()
@@ -199,8 +188,8 @@ public class PlayerController : MonoBehaviour
                 if (inputFrame.fire && Item != null)
                 {
                     RB.MovePosition(inputFrame.movement);
-                    Item.GetComponent<ItemController>().isGhost = isGhost;
                     Item.SetActive(true);
+                    IC.isGhost = isGhost;
                     RB.MovePosition(inputFrame.movement);
                 }
                 else if (!inputFrame.fire && inputFrame.flip)
@@ -237,18 +226,23 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isGhost) return;
         
-        if (gameObject.CompareTag("P1") && other.CompareTag("Trap2") && !other.GameObject().GetComponent<ItemController>().isGhost && !isGhost)
+        if (other.CompareTag("Bullet") && !other.GameObject().GetComponent<BulletController>().isGhost)
         {
-            StartCoroutine(TrapGhost());
-            debugDe = other.GameObject();
+            Destroy(other.GameObject());
+            TurnGhost();
+        }
+        
+        if (gameObject.CompareTag("P1") && other.CompareTag("Trap2") && !other.GameObject().GetComponent<ItemController>().isGhost)
+        {
+            StartCoroutine(TrapGhost(other.GameObject()));
 
         }
         
-        else if (gameObject.CompareTag("P2") && other.CompareTag("Trap1") && !other.GameObject().GetComponent<ItemController>().isGhost  && !isGhost)
+        else if (gameObject.CompareTag("P2") && other.CompareTag("Trap1") && !other.GameObject().GetComponent<ItemController>().isGhost)
         {
-            StartCoroutine(TrapGhost());
-            debugDe = other.GameObject();
+            StartCoroutine(TrapGhost(other.GameObject()));
         }
     }
 
@@ -270,18 +264,34 @@ public class PlayerController : MonoBehaviour
         if (!ItemOnce) return;
         Vector3 spn = transform.position;
         spn = new Vector3(!SpFlip ? spn.x + 0.8f : spn.x - 0.8f, spn.y, spn.z);
-        Item = Instantiate(Ability, spn, Quaternion.identity);
-        Item.tag = gameObject.CompareTag("P1") ? "Trap1" : "Trap2";
-        Item.GetComponent<ItemController>().isGhost = isGhost;
-        Item.GetComponentInChildren<TextMeshPro>().text = gameObject.name[3].ToString();
+        
+        if (Ability.CompareTag("Trap1"))
+        {
+            Item = Instantiate(Ability, spn, Quaternion.identity);
+            IC = Item.GetComponent<ItemController>();
+            Item.GetComponentInChildren<TextMeshPro>().text = gameObject.name[3].ToString();
+            Item.tag = gameObject.CompareTag("P1") ? "Trap1" : "Trap2";
+            IC.isGhost = isGhost;
+        }
+        
+        else if (Ability.CompareTag("Turret"))
+        {
+            Item = Instantiate(Ability, spn, Quaternion.identity);
+            Item.GetComponent<TurretController>().DirectionRight(SpFlip);
+            IC = Item.GetComponent<ItemController>();
+            Item.GetComponentInChildren<TextMeshPro>().text = gameObject.name[3].ToString();
+            IC.isGhost = isGhost;
+            IC.isP1 = gameObject.CompareTag("P1");
+        }
+
         ItemOnce = false;
     }
 
-    IEnumerator TrapGhost()
+    IEnumerator TrapGhost(GameObject G)
     {
         yield return new WaitForSeconds(0.2f);
         TurnGhost();
-        debugDe.SetActive(false);
-
+        G.SetActive(false);
     }
+
 }

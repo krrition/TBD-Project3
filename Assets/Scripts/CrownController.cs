@@ -55,6 +55,8 @@ public class CrownController : MonoBehaviour
             owner = other.GameObject();
             
 
+            
+
         }
         
         else if (other.CompareTag("P2") && !other.GetComponent<PlayerController>().isGhost)
@@ -66,7 +68,7 @@ public class CrownController : MonoBehaviour
             p1W = false;
             p2W = true;
             owner = other.GameObject();
-            
+
         }
     }
 }

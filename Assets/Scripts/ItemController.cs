@@ -4,25 +4,28 @@ using UnityEngine;
 public class ItemController : MonoBehaviour
 {
     public bool isGhost;
-    public bool doOnce;
+    private bool doOnce;
+    private SpriteRenderer SP;
+    public bool isP1;
 
-    [SerializeField]
-    private Material ghostMat;
-
-    [SerializeField]
-    private Material normMat;
+    private void Start()
+    {
+        SP = GetComponent<SpriteRenderer>();
+    }
 
     private void Update()
     {
         if (isGhost && !doOnce)
         {
-            gameObject.GetComponent<MeshRenderer>().material = ghostMat;
+            if (gameObject.name == "Trap(Clone)")SP.color = gameObject.CompareTag("Trap1") ? Color.clear/5 + Color.cyan / 2 : Color.clear/5 + Color.green / 2;
+            if (gameObject.name == "Turret(Clone)")SP.color = isP1 ? Color.clear/5 + Color.cyan / 2 : Color.clear/5 + Color.green / 2;
             doOnce = true;
         }
 
         else if (!isGhost && doOnce)
         {
-            gameObject.GetComponent<MeshRenderer>().material = normMat;
+            if (gameObject.name == "Trap(Clone)")SP.color = Color.white;
+            if (gameObject.name == "Turret(Clone)")SP.color = Color.white;
             doOnce = false;
         }
 

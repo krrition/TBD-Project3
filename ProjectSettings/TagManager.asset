@@ -8,6 +8,9 @@ TagManager:
   - P2
   - Trap1
   - Trap2
+  - Bullet
+  - Wall
+  - Turret
   layers:
   - Default
   - TransparentFX
