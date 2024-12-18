@@ -16,6 +16,7 @@ TagManager:
   - Tnt1
   - Tnt2
   - Hammer
+  - UIText
   layers:
   - Default
   - TransparentFX
