@@ -15,6 +15,7 @@ TagManager:
   - Armor
   - Tnt1
   - Tnt2
+  - Hammer
   layers:
   - Default
   - TransparentFX

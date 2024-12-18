@@ -6,13 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-<<<<<<< Updated upstream
     path: Assets/Scenes/Versus.unity
     guid: 16d80f66c4ae60c48a3c9ffc82b11d77
-=======
-    path: Assets/Prefabs/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
->>>>>>> Stashed changes
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: d7b4827b7aa06c341a604d3383e6692a, type: 3}
   m_UseUCBPForAssetBundles: 0

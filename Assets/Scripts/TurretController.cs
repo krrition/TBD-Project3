@@ -44,7 +44,7 @@ public class TurretController : MonoBehaviour
         if (ShootTimer > 0)
         {
             ShootTimer -= Time.deltaTime;
-            if (!shooting)StartCoroutine(Shoot());
+            if (!shooting && ShootTimer < ShootTime)StartCoroutine(Shoot());
 
         }
         else
@@ -58,19 +58,22 @@ public class TurretController : MonoBehaviour
 
     IEnumerator Shoot()
     {
-        shooting = true;
-        yield return new WaitForSeconds(TimeBetweenBullets);
-        var bul = Instantiate(Bullet,transform.position,quaternion.identity);
-        bullets.Add(bul);
-        bul.GetComponent<Rigidbody>().AddForce(dir*BulletSpeed);
-        var bc = bul.GetComponent<BulletController>();
-        var ic = GetComponent<ItemController>();
+        if (ShootTimer < ShootTime)
+        {
+            shooting = true;
+            yield return new WaitForSeconds(TimeBetweenBullets);
+            var bul = Instantiate(Bullet,transform.position,quaternion.identity);
+            bullets.Add(bul);
+            bul.GetComponent<Rigidbody>().AddForce(dir*BulletSpeed);
+            var bc = bul.GetComponent<BulletController>();
+            var ic = GetComponent<ItemController>();
             bc.isGhost = ic.isGhost;
-        bc.isP1 = ic.isP1;
-        shooting = false;
-        yield return new WaitForSeconds(BulletLifeTime);
-        bullets.Remove(bul);
-        Destroy(bul);
+            bc.isP1 = ic.isP1;
+            shooting = false;
+            yield return new WaitForSeconds(BulletLifeTime);
+            bullets.Remove(bul);
+            Destroy(bul);
+        }
         
     }
 

@@ -159,6 +159,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Item.CompareTag("Turret")) Item.GetComponent<TurretController>().Activate();
             else if (Item.CompareTag("Armor")) Item.GetComponent<ArmorController>().RoundReset();
+            else if (Item.CompareTag("Hammer")) Item.GetComponent<HammerController>().RoundReset();
             Item.SetActive(false);
         }
     }
@@ -303,6 +304,15 @@ public class PlayerController : MonoBehaviour
         }
         
         else if (Ability.CompareTag("Armor"))
+        {
+            Item = Instantiate(Ability, spn, Quaternion.identity);
+            IC = Item.GetComponent<ItemController>();
+            Item.GetComponentInChildren<TextMeshPro>().text = gameObject.name[3].ToString();
+            IC.isGhost = isGhost;
+            IC.isP1 = gameObject.CompareTag("P1");
+        }
+        
+        else if (Ability.CompareTag("Hammer"))
         {
             Item = Instantiate(Ability, spn, Quaternion.identity);
             IC = Item.GetComponent<ItemController>();
