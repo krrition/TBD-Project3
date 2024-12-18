@@ -8,11 +8,20 @@ TagManager:
   - P2
   - Trap1
   - Trap2
+  - Bullet
+  - Wall
+  - Turret
+  - Sprint
+  - Armor
+  - Tnt1
+  - Tnt2
+  - Hammer
+  - UIText
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Map_Icons
   - Water
   - UI
   - 
