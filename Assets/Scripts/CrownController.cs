@@ -8,7 +8,8 @@ public class CrownController : MonoBehaviour
     private GameObject owner;
     private Vector3 startPos;
     private Vector3 crownedPos;
-
+    [SerializeField] private AudioClip CrownPickupSound;
+    [SerializeField] private AudioClip CrownDroppedSound;
     private void Start()
     {
         startPos = transform.position;

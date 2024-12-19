@@ -10,10 +10,11 @@ public class ArmorController : MonoBehaviour
     private Vector3 posPos;
     private PlayerController PC;
     private bool doOnce;
-
+    [SerializeField] private AudioSource ArmorEquip;
     private void Start()
     {
         startPos = transform.position;
+        
     }
 
     private void Update()
@@ -60,4 +61,6 @@ public class ArmorController : MonoBehaviour
 
 
     }
+
+   
 }

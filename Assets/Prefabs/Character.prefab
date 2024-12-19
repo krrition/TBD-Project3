@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.67, y: 0.19, z: 0.7}
-  m_LocalScale: {x: 0.38128, y: 0.38128, z: 0.38128}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2306533625181213643}
@@ -155,6 +155,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2301378326142151232}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnMap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 64b2bb82-6aa1-44ee-bb88-9eb7cb0856c6
+    m_ActionName: 'Player/Zoom[/Keyboard/m]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -199,14 +215,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bc0307420d9d454099883f28ba9d7c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  walkSpeed: 10
+  sprintSpeed: 15
   isGhost: 0
   sp1: {fileID: 21300000, guid: 695227c281ad65142a90b31fef81fe7e, type: 3}
   sp2: {fileID: 21300000, guid: e30dc475130e0ea479c0a69b928e9480, type: 3}
   Ability: {fileID: 0}
   Item: {fileID: 0}
-  debugDe: {fileID: 0}
+  IC: {fileID: 0}
   ItemOnce: 1
+  armorHit: 0
+  miteOwn: 0
+  Camera: {fileID: 0}
 --- !u!212 &7488801679030176725
 SpriteRenderer:
   m_ObjectHideFlags: 0

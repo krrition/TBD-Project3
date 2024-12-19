@@ -65,6 +65,10 @@ public class GameManager : MonoBehaviour
 
    public GameObject Camera;
 
+   
+   
+   
+
 
 
    private void Start()
@@ -209,12 +213,14 @@ public class GameManager : MonoBehaviour
            P1Cs[RoundNum].tag = "P1";
            P1Cs[RoundNum].name = "P1C"+RoundNum;
            P1Cs[RoundNum].GetComponent<PlayerController>().Ability = feedAbility;
+           P1Cs[RoundNum].GetComponent<PlayerController>().Camera = Camera;
            
            if (Camera.GetComponent<CameraController>().target == null)
                Camera.transform.position =
                    new Vector3(SpawnP1.transform.position.x, Camera.transform.position.y, Camera.transform.position.z);
            
            Camera.GetComponent<CameraController>().target = P1Cs[RoundNum].transform;
+           
        }
 
        else
@@ -223,6 +229,8 @@ public class GameManager : MonoBehaviour
            P2Cs[RoundNum].tag = "P2";
            P2Cs[RoundNum].name = "P2C"+RoundNum;
            P2Cs[RoundNum].GetComponent<PlayerController>().Ability = feedAbility;
+           P2Cs[RoundNum].GetComponent<PlayerController>().Camera = Camera;
+
            
            if (Camera.GetComponent<CameraController>().target == null)
                Camera.transform.position =
@@ -473,5 +481,8 @@ public class GameManager : MonoBehaviour
        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
    }
+
+   
+
 
 }

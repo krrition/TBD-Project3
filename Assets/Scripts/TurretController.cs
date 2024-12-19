@@ -10,6 +10,8 @@ public class TurretController : MonoBehaviour
     
     [SerializeField] private float ShootTime, ReloadTime, BulletSpeed, BulletLifeTime, TimeBetweenBullets;
     
+    [SerializeField] private AudioClip TurretPlacement;
+    
     private float ShootTimer, ReloadTimer;
 
     private bool notReloading,shooting;
@@ -73,6 +75,7 @@ public class TurretController : MonoBehaviour
             yield return new WaitForSeconds(BulletLifeTime);
             bullets.Remove(bul);
             Destroy(bul);
+            
         }
         
     }

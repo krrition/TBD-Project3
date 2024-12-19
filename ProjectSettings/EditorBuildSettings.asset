@@ -4,15 +4,6 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-<<<<<<< Updated upstream
-  m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/Versus.unity
-    guid: 16d80f66c4ae60c48a3c9ffc82b11d77
-  m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: d7b4827b7aa06c341a604d3383e6692a, type: 3}
-=======
   m_Scenes: []
   m_configObjects: {}
->>>>>>> Stashed changes
   m_UseUCBPForAssetBundles: 0

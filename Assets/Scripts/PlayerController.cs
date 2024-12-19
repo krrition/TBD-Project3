@@ -54,11 +54,19 @@ public class PlayerController : MonoBehaviour
     [NonSerialized] public bool SpFlip;
 
     public bool armorHit,miteOwn;
+    
+    private float normZoom;
+
+    public GameObject Camera;
+
+    private bool zoomedOut;
 
     private void Start()
     {
         SP = GetComponent<SpriteRenderer>();
         RB = GetComponent<Rigidbody>();
+        
+        speed = walkSpeed;
         StartRecording();
 
         if (gameObject.CompareTag("P1"))
@@ -127,6 +135,25 @@ public class PlayerController : MonoBehaviour
             else if (Ability.CompareTag("Sprint") && sprinting)DeactivateSprint();
         }
     }
+    
+    public void OnMap(InputAction.CallbackContext cc)
+    {
+        if (!isRecording) return;
+
+        if (cc.canceled)
+        {
+            if (!zoomedOut)
+            {
+                ZoomOut();
+                zoomedOut = true;
+            }
+            else
+            {
+                ZoomIn();
+                zoomedOut = false;
+            }
+        }
+    }
 
     public void StartRecording()
     {
@@ -141,6 +168,7 @@ public class PlayerController : MonoBehaviour
     public void StopRecording()
     {
         isRecording = false;
+        ZoomIn();
     }
 
     public void StartReplay()
@@ -351,5 +379,17 @@ public class PlayerController : MonoBehaviour
         sprinting = false;
         speed = walkSpeed;
     }
+    
+    public void ZoomOut()
+    {
+        normZoom = Camera.GetComponent<Camera>().orthographicSize;
+        Camera.GetComponent<Camera>().orthographicSize = normZoom * Camera.GetComponent<CameraController>().zoomOutSize;
 
+    }
+   
+    public void ZoomIn()
+    {
+        Camera.GetComponent<Camera>().orthographicSize = normZoom;
+
+    }
 }
